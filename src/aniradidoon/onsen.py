@@ -1,5 +1,5 @@
 import requests
-import time
+import json
 
 # Variable
 baseURI = "https://www.onsen.ag/"
@@ -8,7 +8,6 @@ maximumTryCount = 3
 
 class OnsenAPIData():
     # Get program information from onsen API
-
     def __init__(self):
         for tryCount in range(0, maximumTryCount):
             try:
@@ -25,12 +24,10 @@ class OnsenAPIData():
                     print(f"{e}")
                     continue   
 
-    def debug(self):
-        if self.result:
-            print("データの取得に成功しています。↓")
-            self.rawData
-        else:
-            print("データの取得に失敗しています。")
-
-data = OnsenAPIData()
-print(data.rawData)
+if __name__ == '__main__':
+    data = OnsenAPIData()
+    if data.result:
+        print("データの取得に成功しています。↓")
+        print(json.dumps(data.rawData))
+    else:
+        print("データの取得に失敗しています。")
