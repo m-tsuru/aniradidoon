@@ -2,10 +2,8 @@ from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Tabs
 import sys
 
-Channels = [
-    "Onsen",
-    "Settings"
-]
+Channels = ["Onsen", "Settings"]
+
 
 class aniradidoonApp(App):
     BINDINGS = [("d", "toggleDark", "Dark"), ("q", "quit", "Quit")]
@@ -23,6 +21,7 @@ class aniradidoonApp(App):
 
     def action_quit(self) -> None:
         sys.exit()
+
 
 if __name__ == "__main__":
     app = aniradidoonApp()
