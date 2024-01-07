@@ -1,18 +1,21 @@
 from textual.app import App, ComposeResult
 from textual.screen import Screen
-from textual.widgets import Header, Footer, Tabs, DataTable, Placeholder
+from textual.widgets import Header, Footer, Tabs, DataTable, Placeholder, Select, Label, Input, Button, Log
 import sys
 import onsen
 
 onsenBaseData = onsen.OnsenAPIData()
 
 class aniradidoonApp(App):
+    CSS_PATH = "style.scss"
     BINDINGS = [("d", "toggleDark", "Dark"), ("q", "quit", "Quit")]
     class onsenListScreen(Screen):
 
         def compose(self) -> ComposeResult:
             self.success = True
             yield Header(show_clock=True, name="AniradiDoon - Control")
+            Header.screen_title = "Aniradi Doon"
+            Header.screen_sub_title = "All Programs List"
             yield Tabs("Onsen")
             if onsenBaseData.result == True:
                 try:
@@ -34,6 +37,42 @@ class aniradidoonApp(App):
                 table.add_columns(*summary[0])
                 table.add_rows(summary[1:])
 
+    class downloadScreen(Screen):
+        def compose(self) -> ComposeResult:
+            yield Header(show_clock=True, name="AniradiDoon - Control")
+            Header.screen_title = "Aniradi Doon"
+            Header.screen_sub_title = "Download Option"
+            yield Label("Program Detail:", classes="labelLeft")
+            yield DataTable(id="detailProgram")
+            yield Label("Download Content:", classes="labelLeft")
+            yield Select.from_values(["第1回 (1/5, Movie, Free)【Guest: hoge】", "第2回 (1/5, Movie, Free)【Guest: hoge】"])
+            yield Label("Convert Option:", classes="labelLeft")
+            yield Select.from_values(["Original", "Sound Only"])
+            yield Label("Execute FFmpeg:", classes="labelLeft")
+            yield Input(placeholder="Select Download Content!", disabled=True)
+            yield Button(label="Execute")
+            yield Log()
+            yield Footer()
+
+        def on_mount(self) -> None:
+            detailProgram = [("Subject", "data"),
+            ("Directory Name", "hoge"),
+            ("Performer", "鷲崎健"),
+            ("Latest Update", "2024/01/01"),
+            ("Station", "インターネット・ラジオステーション〈音泉〉"),
+            ("Copyrights", "(C) 2024 hoge"),
+            ("Free", "True"),
+            ("Premium", "True"),
+            ("URL", "https://onsen.ag/hoge")]
+            table = self.query_one(DataTable)
+            table.cell_padding = True
+            table.zebra_stripes = False
+            table.show_cursor = False
+            table.add_columns(*detailProgram[0])
+            table.add_rows(detailProgram[1:])
+            log = self.query_one(Log)
+            log.write_line("Info: Get Program Data from Onsen API")
+            log.write_line("Info: " + str(detailProgram))
     class preferencesScreen(Screen):
         def compose(self) -> ComposeResult:
             yield Header(show_clock=True, name="AniradiDoon - Control")
