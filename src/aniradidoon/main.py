@@ -8,11 +8,17 @@ onsenBaseData = onsen.OnsenAPIData()
 
 class aniradidoonApp(App):
     CSS_PATH = "style.scss"
-    BINDINGS = [("d", "toggleDark", "Dark"), ("q", "quit", "Quit")]
+    BINDINGS = [("d", "toggleDark", "Dark"),
+                ("q", "quit", "Quit"),
+                ("l", "switch_mode('Onsen')", "Program List")]
+    
+
+
     class onsenListScreen(Screen):
 
         def compose(self) -> ComposeResult:
             self.success = True
+            self.selectedOnsenProgram = ""
             yield Header(show_clock=True, name="AniradiDoon - Control")
             Header.screen_title = "Aniradi Doon"
             Header.screen_sub_title = "All Programs List"
@@ -55,15 +61,8 @@ class aniradidoonApp(App):
             yield Footer()
 
         def on_mount(self) -> None:
-            detailProgram = [("Subject", "data"),
-            ("Directory Name", "hoge"),
-            ("Performer", "鷲崎健"),
-            ("Latest Update", "2024/01/01"),
-            ("Station", "インターネット・ラジオステーション〈音泉〉"),
-            ("Copyrights", "(C) 2024 hoge"),
-            ("Free", "True"),
-            ("Premium", "True"),
-            ("URL", "https://onsen.ag/hoge")]
+            onsenDetailData = onsen.OnsenAPIDetailData(selectedOnsenProgram)
+            detailProgram = onsenDetailData.summary()[0]
             table = self.query_one(DataTable)
             table.cell_padding = True
             table.zebra_stripes = False
@@ -76,7 +75,7 @@ class aniradidoonApp(App):
     class preferencesScreen(Screen):
         def compose(self) -> ComposeResult:
             yield Header(show_clock=True, name="AniradiDoon - Control")
-            yield Placeholder("Preferences")
+            yield Placeholder("Preferences will be available soon!")
             yield Footer()
 
     MODES = {
@@ -91,7 +90,8 @@ class aniradidoonApp(App):
         self.switch_mode("Onsen")
 
     def on_data_table_row_selected(self):
-        self.switch_mode('Download')
+            self.selectedOnsenProgram = "gurepa"
+            self.switch_mode('Download')
 
     def action_toggleDark(self) -> None:
         self.dark = not self.dark
